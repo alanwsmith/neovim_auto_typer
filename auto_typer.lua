@@ -1,40 +1,97 @@
 local updates = {
   content = {},
-  current_index = 1
+  runner = {},
 }
 
-updates.content[1] = { kind = "write", data = "-- this is some code" }
+updates.content[1] = { action = "write", data = "-- this is some code" }
+updates.content[2] = { action = "pause", kind = "short" }
+updates.content[3] = { action = "write", data = "-- and some more" }
 
-local pause = function(min, max) 
-  return math.random(min, max)
+updates.deploy = function(d)
+  if d.kind == 'char' then
+    vim.cmd('normal A' .. d.data)
+  end
 end
 
-updates.write = function(data)
-  local timer = vim.loop.new_timer()
-  local d = {}
-  local i = 1
-  for str in string.gmatch(data, "(.)") do
-    table.insert(d, str)
+updates.make_runner = function() 
+  local runner_ping = 1
+  for k, v in ipairs(updates.content) do
+    if v.action == 'write' then
+      for str in string.gmatch(v.data, "(.)") do
+        updates.runner[runner_ping] = { kind = "char", tics = 4, data = str }
+        runner_ping = runner_ping + 1
+      end
+    end
   end
-  timer:start(0, pause(20, 50), vim.schedule_wrap(function() 
-    vim.cmd('normal A' .. d[i])
-    -- print(d[i])
-    i = i + 1
-    if i > #d then
-      timer:close()
+end
+
+
+updates.go = function() 
+  local timer = vim.loop.new_timer()  
+  local runner_index = 1
+  local runner_tics = updates.runner[runner_index].tics
+  timer:start(0, 5, vim.schedule_wrap(function() 
+    if runner_tics == 0 then
+      updates.deploy(updates.runner[runner_index])
+      runner_index = runner_index + 1
+      if runner_index > #updates.runner then
+        timer:stop()
+        timer:close()
+      else
+        runner_tics = updates.runner[runner_index].tics
+      end
+    else 
+      runner_tics = runner_tics - 1
     end
   end))
 end
 
-updates.run = function()
-  for k, v in ipairs(updates.content) do
-    if v.kind == "write" then
-      updates.write(v.data)
-    end
-  end
+updates.run = function() 
+  updates.make_runner()
+  updates.go()
 end
 
 updates.run()
+
+
+-- local pause = function(min, max) 
+--   return math.random(min, max)
+-- end
+
+-- updates.write = function(data)
+--   local timer = vim.loop.new_timer()
+--   local d = {}
+--   local i = 1
+--   for str in string.gmatch(data, "(.)") do
+--     table.insert(d, str)
+--   end
+--   timer:start(0, pause(20, 50), vim.schedule_wrap(function() 
+--     vim.cmd('normal A' .. d[i])
+--     -- print(d[i])
+--     i = i + 1
+--     if i > #d then
+--       timer:close()
+--     end
+--   end))
+-- end
+
+-- updates.run = function()
+--   local main_timer = vim.loop.new_timer()
+--   local main_indx = 1
+--   main_timer:start(1000, pause(10, 10), vim.schedule_wrap(function()
+--     local v = updates.content[main_indx]
+--     main_indx = main_indx + 1
+--     print(v.data)
+--     if main_indx > #updates.content then
+--       main_timer:close()
+--     end
+--   end))
+--   -- for k, v in ipairs(updates.content) do
+--   --   if v.kind == "write" then
+--   --     updates.write(v.data)
+--   --   end
+--   -- end
+-- end
 
 
 
