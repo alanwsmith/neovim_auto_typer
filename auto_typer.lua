@@ -1,3 +1,43 @@
+local updates = {
+  content = {},
+  current_index = 1
+}
+
+updates.content[1] = { kind = "write", data = "-- this is some code" }
+
+local pause = function(min, max) 
+  return math.random(min, max)
+end
+
+updates.write = function(data)
+  local timer = vim.loop.new_timer()
+  local d = {}
+  local i = 1
+  for str in string.gmatch(data, "(.)") do
+    table.insert(d, str)
+  end
+  timer:start(0, pause(20, 50), vim.schedule_wrap(function() 
+    vim.cmd('normal A' .. d[i])
+    -- print(d[i])
+    i = i + 1
+    if i > #d then
+      timer:close()
+    end
+  end))
+end
+
+updates.run = function()
+  for k, v in ipairs(updates.content) do
+    if v.kind == "write" then
+      updates.write(v.data)
+    end
+  end
+end
+
+updates.run()
+
+
+
 -- local do_it = function()
 --   print("asdf")
 --   local t = vim.loop.new_timer()
@@ -8,36 +48,12 @@
 --   -- print("eeeee")
 -- end
 
-local updates = {
-  content = {},
-  current_index = 1
-}
 
-updates.content[1] = { kind = "write", data = "this is some code" }
 
 -- d.write = function(s)
 --   print(s)
 -- end
 --
-
-updates.write = function(data)
-  -- local timer = vim.loop.new_timer()
-  -- local d = {}
-  -- local i = 1
-  -- for str in string.gmatch(data, "(%w)") do
-  --   table.insert(t, str)
-  -- end
-  -- timer:start(0, 100, vim.schedule_wrap(
-  --   function() 
-  --     vim.cmd("normal A" .. d.current_index)
-  --     d.current_index = d.current_index + 1
-  --     if d.current_index > #d.content then
-  --       d.timer:close()
-  --     end
-  --   end
-  -- ))
-
-end
 
 
 -- function mysplit(inputstr, sep)
@@ -51,29 +67,8 @@ end
 --   return t
 -- end
 
-updates.run = function()
-  for k, v in ipairs(updates.content) do
-    if v.kind == "write" then
-      updates.write(v.data)
-    end
-  end
-
-  -- d.timer:start(1000, 1000, vim.schedule_wrap(
-  --   function() 
-  --     vim.cmd("normal A" .. d.current_index)
-  --     d.current_index = d.current_index + 1
-  --     if d.current_index > #d.content then
-  --       d.timer:close()
-  --     end
-  --   end
-  -- ))
-
-end
 
 
-updates.run()
-
-print("asdf")
 
 -- return {
 --   run = updates.run() 
