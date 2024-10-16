@@ -4,12 +4,14 @@ local updates = {
 }
 
 updates.content[1] = { action = "write", data = "-- this is some code" }
-updates.content[2] = { action = "pause", kind = "short" }
+updates.content[2] = { action = "newline" }
 updates.content[3] = { action = "write", data = "-- and some more" }
 
 updates.deploy = function(d)
   if d.kind == 'char' then
     vim.cmd('normal A' .. d.data)
+  elseif d.kind == 'newline' then
+    vim.cmd('normal o')
   end
 end
 
@@ -21,6 +23,9 @@ updates.make_runner = function()
         updates.runner[runner_ping] = { kind = "char", tics = 4, data = str }
         runner_ping = runner_ping + 1
       end
+    elseif v.action == 'newline' then
+      updates.runner[runner_ping] = { kind = "newline", tics = 20 }
+      runner_ping = runner_ping + 1
     end
   end
 end
