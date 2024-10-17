@@ -28,13 +28,13 @@ updates.load_script = function()
     if line ~= "" then
       local line_parts = line:split("|")
       if line_parts[1] == "newline" then
-        print("GOT NEWLINE")
+        table.insert(updates.content, { action = "newline" })
       elseif line_parts[1] == "pause" then
-        print("GOT PAUSE")
+        table.insert(updates.content, { action = "pause", kind = "edit"})
       elseif line_parts[1] == "tab" then
-        print("GOT TAB")
+        table.insert(updates.content, { action = "tab" })
       elseif line_parts[1] == "write" then
-        print("GOT WRITE")
+        table.insert(updates.content, { action = "write", data = "-- SOME DATA TO BE FROM CONFIG"})
       end
     end
   end
@@ -42,11 +42,12 @@ end
 
 
 
-updates.content[1] = { action = "write", data = "-- this is some code" }
-updates.content[2] = { action = "newline" }
-updates.content[3] = { action = "write", data = " and some more" }
-updates.content[4] = { action = "newline" }
-updates.content[5] = { action = "write", data = " and even more" }
+
+-- updates.content[1] = { action = "write", data = "-- this is some code" }
+-- updates.content[2] = { action = "newline" }
+-- updates.content[3] = { action = "write", data = " and some more" }
+-- updates.content[4] = { action = "newline" }
+-- updates.content[5] = { action = "write", data = " and even more" }
 
 
 
@@ -105,9 +106,11 @@ end
 
 updates.run = function() 
   updates.load_script()
-  -- updates.make_runner()
-  -- updates.go()
+  updates.make_runner()
+  updates.go()
 end
 
 updates.run()
+
+
 
