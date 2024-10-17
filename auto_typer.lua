@@ -39,18 +39,6 @@ updates.load_script = function()
 end
 
 
---local ping = function()
---  vim.api.nvim_paste([[-- alfa
---]], false, -1)
---  --print("alfa")
---  do_sleep(3)
---  --print("bravo")
---  -- nvim_paste({"asdf"})
---  vim.api.nvim_paste([[-- bravo]], false, -1)
---end
-
-
-
 local do_sleep = function(t) 
   os.execute("sleep " .. tonumber(t))
 end
@@ -66,7 +54,7 @@ updates.go = function()
     if v.action == "newline" then
       vim.api.nvim_paste("\n", false, -1)
     elseif v.action == "pause" then
-			do_sleep(2)
+      vim.uv.sleep(100)
     elseif v.action == "tab" then
       vim.api.nvim_paste("\t", false, -1)
     elseif v.action == "write" then
