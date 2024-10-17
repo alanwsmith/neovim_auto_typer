@@ -1,0 +1,3 @@
+write|data~-- this is some text
+newline
+write|data~-- and more text 
