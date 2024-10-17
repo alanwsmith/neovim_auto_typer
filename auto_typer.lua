@@ -28,7 +28,7 @@ updates.load_script = function()
       if line_parts[1] == "newline" then
         table.insert(updates.content, { action = "newline" })
       elseif line_parts[1] == "pause" then
-        table.insert(updates.content, { action = "pause", kind = line_parts[2])
+        table.insert(updates.content, { action = "pause", kind = line_parts[2] })
       elseif line_parts[1] == "tab" then
         table.insert(updates.content, { action = "tab" })
       elseif line_parts[1] == "write" then
@@ -50,13 +50,10 @@ end
 --end
 
 
--- ping()
 
--- alfa
--- bravo
--- local do_sleep = function(t) 
---   os.execute("sleep " .. tonumber(t))
--- end
+local do_sleep = function(t) 
+  os.execute("sleep " .. tonumber(t))
+end
 
 updates.output_chars = function(data)
   for str in string.gmatch(data, "(.)") do
@@ -64,13 +61,14 @@ updates.output_chars = function(data)
   end
 end
 
-
 updates.go = function()
   for _, v in ipairs(updates.content) do
     if v.action == "newline" then
-      vim.cmd('normal o')
+      vim.api.nvim_paste("\n", false, -1)
     elseif v.action == "pause" then
+			do_sleep(2)
     elseif v.action == "tab" then
+      vim.api.nvim_paste("\t", false, -1)
     elseif v.action == "write" then
       updates.output_chars(v.data)
     end
@@ -80,20 +78,11 @@ end
 updates.run = function() 
   vim.cmd('set paste')
   updates.load_script()
-  -- vim.cmd('NvimTreeClose')
-  -- vim.cmd('tabnew')
+  vim.cmd('NvimTreeClose')
+  vim.cmd('tabnew')
   updates.go()
   vim.cmd('set nopaste')
 end
-
-
--- updates.run = function() 
---   -- local pop_buffer = vim.api.nvim_create_buf(false, true)
---   vim.cmd('NvimTreeClose')
---   updates.load_script()
---   updates.make_runner()
---   updates.go()
--- end
 
 updates.run()
 

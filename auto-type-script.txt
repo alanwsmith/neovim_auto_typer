@@ -1,7 +1,8 @@
 write|-- first line from config 
 newline
-write|-- second line from config
+pause|edit
 tab
+write|-- second line from config
 pause|edit
 newline
 write|-- third line from config 
