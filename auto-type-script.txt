@@ -1,8 +1,10 @@
-write|-- first line from config 
+pop_window
+write|-- code
 newline
-pause|edit
-tab
-write|-- second line from config
-pause|edit
+write|-- python
 newline
-write|-- third line from config 
+newline
+write|for i in range(0, 7):
+newline
+write|    print(i)
+newline
