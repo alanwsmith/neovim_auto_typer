@@ -1,3 +1,5 @@
 write|data~-- this is some text
 newline
-write|data~-- and more text 
+write|data~-- and some more
+tab
+pause|edit
