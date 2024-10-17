@@ -1,5 +1,7 @@
-write|data~-- this is some text
+write|-- first line from config 
 newline
-write|data~-- and some more
+write|-- second line from config 
 tab
 pause|edit
+newline
+write|-- third line from config 

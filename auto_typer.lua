@@ -1,7 +1,7 @@
 local updates = {
   content = {},
   runner = {},
-  debug = 1
+  debug = 0
 }
 
 function string:split(delimiter)
@@ -34,22 +34,11 @@ updates.load_script = function()
       elseif line_parts[1] == "tab" then
         table.insert(updates.content, { action = "tab" })
       elseif line_parts[1] == "write" then
-        table.insert(updates.content, { action = "write", data = "-- SOME DATA TO BE FROM CONFIG"})
+        table.insert(updates.content, { action = "write", data = line_parts[2] })
       end
     end
   end
 end
-
-
-
-
--- updates.content[1] = { action = "write", data = "-- this is some code" }
--- updates.content[2] = { action = "newline" }
--- updates.content[3] = { action = "write", data = " and some more" }
--- updates.content[4] = { action = "newline" }
--- updates.content[5] = { action = "write", data = " and even more" }
-
-
 
 updates.deploy = function(d)
   if d.kind == 'char' then
@@ -87,7 +76,6 @@ updates.go = function()
   local timer = vim.loop.new_timer()  
   local runner_index = 1
   local runner_tics = 0
-  -- updates.runner[runner_index].tics
   timer:start(0, 5, vim.schedule_wrap(function() 
     if runner_tics == updates.runner[runner_index].tics then
       updates.deploy(updates.runner[runner_index])
@@ -105,12 +93,11 @@ updates.go = function()
 end
 
 updates.run = function() 
+  vim.cmd('set paste')
   updates.load_script()
   updates.make_runner()
   updates.go()
 end
 
 updates.run()
-
-
 
