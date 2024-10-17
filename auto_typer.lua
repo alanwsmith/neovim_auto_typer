@@ -1,7 +1,7 @@
 local updates = {
   content = {},
   runner = {},
-  debug = 0
+  debug = 1
 }
 
 function string:split(delimiter)
@@ -41,11 +41,13 @@ updates.load_script = function()
 end
 
 updates.deploy = function(d)
+  vim.cmd('set paste')
   if d.kind == 'char' then
     vim.cmd('normal A' .. d.data)
   elseif d.kind == 'newline' then
     vim.cmd('normal o')
   end
+	vim.cmd('set nopaste')
 end
 
 updates.make_runner = function() 
@@ -93,7 +95,9 @@ updates.go = function()
 end
 
 updates.run = function() 
-  vim.cmd('set paste')
+  -- local pop_buffer = vim.api.nvim_create_buf(false, true)
+  vim.cmd('NvimTreeClose')
+  vim.cmd('tabnew')
   updates.load_script()
   updates.make_runner()
   updates.go()
@@ -101,3 +105,7 @@ end
 
 updates.run()
 
+
+-- return {
+--   run = updates.run() 
+-- }
