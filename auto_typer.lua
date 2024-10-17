@@ -1,6 +1,5 @@
 local updates = {
   content = {},
-  runner = {},
   debug = 1
 }
 
@@ -23,14 +22,13 @@ updates.load_script = function()
   local script_data = f:read("*all")
   local lines = script_data:split("\n")
   f:close()
-
   for _, line in ipairs(lines) do
     if line ~= "" then
       local line_parts = line:split("|")
       if line_parts[1] == "newline" then
         table.insert(updates.content, { action = "newline" })
       elseif line_parts[1] == "pause" then
-        table.insert(updates.content, { action = "pause", kind = "edit"})
+        table.insert(updates.content, { action = "pause", kind = line_parts[2])
       elseif line_parts[1] == "tab" then
         table.insert(updates.content, { action = "tab" })
       elseif line_parts[1] == "write" then
@@ -40,72 +38,62 @@ updates.load_script = function()
   end
 end
 
-updates.deploy = function(d)
-  vim.cmd('set paste')
-  if d.kind == 'char' then
-    vim.cmd('normal A' .. d.data)
-  elseif d.kind == 'newline' then
-    vim.cmd('normal o')
-  end
-	vim.cmd('set nopaste')
-end
 
-updates.make_runner = function() 
-  local runner_ping = 1
-  for k, v in ipairs(updates.content) do
-    if v.action == 'write' then
-      for str in string.gmatch(v.data, "(.)") do
-        local tics = 5
-        if updates.debug == 1 then
-          tics = 0
-        end
-        updates.runner[runner_ping] = { kind = "char", tics = tics, data = str }
-        runner_ping = runner_ping + 1
-      end
-    elseif v.action == 'newline' then
-      local tics = 80
-      if updates.debug == 1 then
-        tics = 0
-      end
-      updates.runner[runner_ping] = { kind = "newline", tics = tics }
-      runner_ping = runner_ping + 1
-    end
+--local ping = function()
+--  vim.api.nvim_paste([[-- alfa
+--]], false, -1)
+--  --print("alfa")
+--  do_sleep(3)
+--  --print("bravo")
+--  -- nvim_paste({"asdf"})
+--  vim.api.nvim_paste([[-- bravo]], false, -1)
+--end
+
+
+-- ping()
+
+-- alfa
+-- bravo
+-- local do_sleep = function(t) 
+--   os.execute("sleep " .. tonumber(t))
+-- end
+
+updates.output_chars = function(data)
+  for str in string.gmatch(data, "(.)") do
+    vim.api.nvim_paste(str, false, -1)
   end
 end
 
 
-updates.go = function() 
-  local timer = vim.loop.new_timer()  
-  local runner_index = 1
-  local runner_tics = 0
-  timer:start(0, 5, vim.schedule_wrap(function() 
-    if runner_tics == updates.runner[runner_index].tics then
-      updates.deploy(updates.runner[runner_index])
-      runner_index = runner_index + 1
-      if runner_index > #updates.runner then
-        timer:stop()
-        timer:close()
-      else
-        runner_tics = 0
-      end
-    else 
-      runner_tics = runner_tics + 1
+updates.go = function()
+  for _, v in ipairs(updates.content) do
+    if v.action == "newline" then
+      vim.cmd('normal o')
+    elseif v.action == "pause" then
+    elseif v.action == "tab" then
+    elseif v.action == "write" then
+      updates.output_chars(v.data)
     end
-  end))
+  end
 end
 
 updates.run = function() 
-  -- local pop_buffer = vim.api.nvim_create_buf(false, true)
-  vim.cmd('NvimTreeClose')
-  vim.cmd('tabnew')
+  vim.cmd('set paste')
   updates.load_script()
-  updates.make_runner()
+  -- vim.cmd('NvimTreeClose')
+  -- vim.cmd('tabnew')
   updates.go()
+  vim.cmd('set nopaste')
 end
+
+
+-- updates.run = function() 
+--   -- local pop_buffer = vim.api.nvim_create_buf(false, true)
+--   vim.cmd('NvimTreeClose')
+--   updates.load_script()
+--   updates.make_runner()
+--   updates.go()
+-- end
 
 updates.run()
 
-
--- return {
---   run = updates.run() 
--- }

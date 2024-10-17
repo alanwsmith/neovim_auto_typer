@@ -1,6 +1,6 @@
 write|-- first line from config 
 newline
-write|-- second line from config 
+write|-- second line from config
 tab
 pause|edit
 newline
