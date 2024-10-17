@@ -3,7 +3,10 @@ local M = {
 }
 
 -- not sure how naming spacing works here so 
--- prefixing with `aws_`
+-- prefixing with `aws_` 
+-- NOTE: This feels like it's messing with string
+-- globally. If that's the case, I want to find
+-- another approach
 function string:aws_split(delimiter)
   local result = {}
   local from  = 1
@@ -17,13 +20,27 @@ function string:aws_split(delimiter)
   return result
 end
 
--- function M.ping()
---   print("yyyy")
--- end
+function M.run()
+  M.load_script()
+  vim.cmd('NvimTreeClose')
+  vim.cmd('set paste')
+  M.type_the_script()
+  vim.cmd('set nopaste')
+  vim.cmd('NvimTreeOpen')
+end
 
 function M.type_the_script() 
-  print("typing the script")
-  M.load_script()
+  for _, v in ipairs(M.content) do
+    if v.action == "newline" then
+      vim.api.nvim_paste("\n", false, -1)
+    elseif v.action == "pause" then
+      vim.uv.sleep(1000)
+    elseif v.action == "tab" then
+      vim.api.nvim_paste("\t", false, -1)
+    elseif v.action == "write" then
+      M.output_chars(v.data)
+    end
+  end
 end
 
 function M.load_script() 
@@ -52,44 +69,13 @@ function M.load_script()
   end
 end
 
+function M.output_chars(data)
+  for str in string.gmatch(data, "(.)") do
+    vim.api.nvim_paste(str, false, -1)
+    vim.uv.sleep(20)
+  end
+end
 
--- local output_chars = function(data)
---   for str in string.gmatch(data, "(.)") do
---     vim.api.nvim_paste(str, false, -1)
---     vim.uv.sleep(20)
---   end
--- end
-
--- local go = function(content)
---   for _, v in ipairs(content) do
---     if v.action == "newline" then
---       vim.api.nvim_paste("\n", false, -1)
---     elseif v.action == "pause" then
---       vim.uv.sleep(1000)
---     elseif v.action == "tab" then
---       vim.api.nvim_paste("\t", false, -1)
---     elseif v.action == "write" then
---       output_chars(v.data)
---     end
---   end
--- end
-
--- run = function() 
---   vim.cmd('NvimTreeClose')
---   vim.cmd('set paste')
---   local content = load_script()
---   go(content)
---   vim.cmd('set nopaste')
--- end
-
--- run()
-
-
-
--- return {
---  run = run
--- }
-
-M.type_the_script()
+-- M.run()
 
 return M
