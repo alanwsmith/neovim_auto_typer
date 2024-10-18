@@ -11,9 +11,15 @@ Commands
 
 -- list/
 
-- skip-start
 
-- skip-end
+- ``cmd|STRING`` - Sends string to ``vim.cmd()``
+
+- ``debug|[on|off]`` - Turns debug mode on or off (when on, delays are set to 0)
+
+- ``end-skip`` - stops skipping lines in the script file
+
+- ``start-skip`` - starts skipping lines in the script file
+
 
 -- /list
 
