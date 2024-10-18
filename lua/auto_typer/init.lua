@@ -32,7 +32,7 @@ function M.load_script()
         if line_parts[1] == "close-popup" then
           table.insert(M.content, { action = "close-popup" })
         elseif line_parts[1] == "cmd" then
-          table.insert(M.content, { action = "cmd", str = M.trim(line_parts[2]) })
+          table.insert(M.content, { action = "cmd", command = M.trim(line_parts[2]) })
         elseif line_parts[1] == "debug" then
           table.insert(M.content, { action = "debug", state = M.trim(line_parts[2]) })
         elseif line_parts[1] == "end-skip" then
@@ -73,7 +73,7 @@ end
 function M.output_chars(data)
   for str in string.gmatch(data, "(.)") do
     vim.api.nvim_paste(str, false, -1)
-    M.do_delay(20, 300)
+    M.do_delay(20, 40)
   end
 end
 
@@ -105,6 +105,8 @@ function M.type_the_script()
   for _, v in ipairs(M.content) do
     if v.action == "close-popup" then
       M.close_popup()
+    elseif v.action == "cmd" then
+      vim.cmd(v.command)
     elseif v.action == "debug" then
       print("debug now: " .. v.state)
       M.debug = v.state
@@ -121,7 +123,5 @@ function M.type_the_script()
     end
   end
 end
-
--- M.run()
 
 return M
