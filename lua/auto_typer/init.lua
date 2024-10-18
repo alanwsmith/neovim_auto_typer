@@ -1,8 +1,21 @@
 local M = {
   debug = "off",
   source = os.getenv('HOME') .. "/Desktop/auto-typer-script.txt",
-  content = {}
+  content = {},
+  popup_id = nil,
 }
+
+function M.close_popup()
+  -- vim.api.nvim_paste("CLOSING: " .. M.popup_id)
+  vim.api.nvim_win_close(M.popup_id, {force=true}) 
+  M.popup_id = nil
+end
+
+function M.do_delay(min, max) 
+  if M.debug ~= "on" then
+    vim.uv.sleep(20)
+  end
+end
 
 function M.load_script() 
   M.content = {}
@@ -15,7 +28,9 @@ function M.load_script()
     if line ~= "" then
       local line_parts = M.split(line, "|")
       if line_parts[1] ~= nil then
-        if line_parts[1] == "cmd" then
+        if line_parts[1] == "close-popup" then
+          table.insert(M.content, { action = "close-popup" })
+        elseif line_parts[1] == "cmd" then
           table.insert(M.content, { action = "cmd", str = M.trim(line_parts[2]) })
         elseif line_parts[1] == "debug" then
           table.insert(M.content, { action = "debug", state = M.trim(line_parts[2]) })
@@ -39,7 +54,6 @@ function M.load_script()
   end
 end
 
-
 function M.open_popup()
   local opts = {
     style="minimal", 
@@ -52,13 +66,13 @@ function M.open_popup()
   opts.row = (vim.api.nvim_win_get_height(0) / 2) - (opts.height / 2)
   local floating_buffer = vim.api.nvim_create_buf(false, true)
   local floating_window = vim.api.nvim_open_win(floating_buffer, true, opts)
-  return floating_buffer
+  M.popup_id = floating_window
 end
 
 function M.output_chars(data)
   for str in string.gmatch(data, "(.)") do
     vim.api.nvim_paste(str, false, -1)
-    vim.uv.sleep(20)
+    M.do_delay(20, 40)
   end
 end
 
@@ -88,7 +102,9 @@ end
 
 function M.type_the_script() 
   for _, v in ipairs(M.content) do
-    if v.action == "debug" then
+    if v.action == "close-popup" then
+      M.close_popup()
+    elseif v.action == "debug" then
       print("debug now: " .. v.state)
       M.debug = v.state
     elseif v.action == "newline" then
@@ -96,7 +112,7 @@ function M.type_the_script()
     elseif v.action == "open-popup" then
       M.open_popup()
     elseif v.action == "pause" then
-      vim.uv.sleep(500)
+      M.do_delay(500, 500)
     elseif v.action == "tab" then
       vim.api.nvim_paste("\t", false, -1)
     elseif v.action == "write" then
@@ -105,7 +121,7 @@ function M.type_the_script()
   end
 end
 
-M.run()
+-- M.run()
 
 
--- return M
+return M

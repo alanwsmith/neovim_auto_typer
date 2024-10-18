@@ -1,5 +1,4 @@
 pause|start
-debug|on
 cmd|echo 'test'
 skip-start
 open-popup
@@ -7,9 +6,12 @@ write|Hello World
 newline
 newline
 write|This is a test
-newline
-newline
+pause|edit
+close-popup
+pause|edit
+debug|on
 write|for i in range(0, 7):
 newline
 write|    print(i)
 newline
+
