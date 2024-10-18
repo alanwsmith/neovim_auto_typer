@@ -9,7 +9,6 @@ write|This is a test
 pause|edit
 close-popup
 pause|edit
-debug|on
 write|for i in range(0, 7):
 newline
 write|    print(i)
