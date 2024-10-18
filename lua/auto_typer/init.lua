@@ -6,14 +6,15 @@ local M = {
 }
 
 function M.close_popup()
-  -- vim.api.nvim_paste("CLOSING: " .. M.popup_id)
   vim.api.nvim_win_close(M.popup_id, {force=true}) 
   M.popup_id = nil
 end
 
 function M.do_delay(min, max) 
   if M.debug ~= "on" then
-    vim.uv.sleep(20)
+    math.randomseed(os.time())
+    local delay = math.random(min, max)
+    vim.uv.sleep(delay)
   end
 end
 
@@ -72,7 +73,7 @@ end
 function M.output_chars(data)
   for str in string.gmatch(data, "(.)") do
     vim.api.nvim_paste(str, false, -1)
-    M.do_delay(20, 40)
+    M.do_delay(20, 300)
   end
 end
 
@@ -122,6 +123,5 @@ function M.type_the_script()
 end
 
 -- M.run()
-
 
 return M
