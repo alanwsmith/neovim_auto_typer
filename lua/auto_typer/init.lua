@@ -6,8 +6,13 @@ local M = {
 }
 
 function M.close_popup()
-  vim.api.nvim_win_close(M.popup_id, {force=true}) 
+  vim.api.nvim_win_close(M.popup_id, {}) 
   M.popup_id = nil
+  -- this is a hack to close the popup window
+  -- without it, the window stays open until 
+  -- the next character is written which means
+  -- pauses after it closes doesn't work
+  vim.api.nvim_paste("", false, -1)
 end
 
 function M.do_delay(min, max) 
@@ -98,7 +103,7 @@ function M.split(str, delimiter)
 end
 
 function M.trim(str) 
- return string.gsub(str, '^%s*(.-)%s*$', '%1')
+  return string.gsub(str, '^%s*(.-)%s*$', '%1')
 end
 
 function M.type_the_script() 
@@ -115,7 +120,7 @@ function M.type_the_script()
     elseif v.action == "open-popup" then
       M.open_popup()
     elseif v.action == "pause" then
-      M.do_delay(500, 500)
+      M.do_delay(2000, 2000)
     elseif v.action == "tab" then
       vim.api.nvim_paste("\t", false, -1)
     elseif v.action == "write" then
