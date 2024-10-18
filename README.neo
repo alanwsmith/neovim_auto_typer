@@ -14,17 +14,25 @@ Commands
 
 - ``cmd|STRING`` - Sends string to ``vim.cmd()``
 
-- ``debug|[on|off]`` - Turns debug mode on or off (when on, delays are set to 0)
+- ``debug|[on|off]`` - Turns debug mode on or off 
+(when on, delays are set to 0)
 
 - ``end-skip`` - stops skipping lines in the script file
 
+- ``normal`` - string to pass to normal mode (doesn't 
+deal with modifier keys at the moment)
+
 - ``start-skip`` - starts skipping lines in the script file
+
+- ``stop`` - nothing after this will be run. Helpful
+when combined with ``debug|on`` to quickly get to 
+specicif parts of the replay to look at
 
 -- /list
 
 
 
 -- metadata
+-- created: 2024-10-18T00:35:01-04:00
 -- id: 2nauegoo
-
 
