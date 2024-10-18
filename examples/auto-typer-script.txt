@@ -1,16 +1,61 @@
-pause|start
-cmd|echo 'test'
-skip-start
+debug|on
+
+open_file|/tmp/auto-type-test.neo
+normal|gg0dG
+
+pause|edit
+
 open-popup
-write|Hello World
+
+write|Running Code Inside Notes
 newline
 newline
-write|This is a test
+write|Let's start with a basic file
 pause|edit
+
 close-popup
+
 pause|edit
-write|for i in range(0, 7):
+write|-- title
 newline
-write|    print(i)
 newline
+write|Running Code In Notes Demo
+newline
+newline
+newline
+newline
+newline
+write|-- metadata
+newline
+write|-- created: 2024-10-18T00:44:10-04:00
+newline
+write|-- id: 2naorsny
+newline
+normal|gg0
+
+pause|edit
+
+debug|off
+
+open-popup
+
+
+
+stop
+
+
+
+write|-- code
+newline
+write|-- python
+newline
+newline
+write|print("hello, auto")
+newline
+newline
+
+pause|edit
+
+combo|<M-S-r>
+
 
