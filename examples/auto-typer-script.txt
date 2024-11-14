@@ -1,0 +1,84 @@
+debug|on
+
+open_file|/tmp/auto-type-test.neo
+normal|gg0dG
+
+pause|edit
+
+open-popup
+
+write|Running Code Inside Notes
+newline
+newline
+write|Let's start with a basic file
+pause|edit
+
+close-popup
+
+pause|edit
+write|-- title
+newline
+newline
+write|Running Code In Notes Demo
+newline
+newline
+newline
+newline
+newline
+write|-- metadata
+newline
+write|-- created: 2024-10-18T00:44:10-04:00
+newline
+write|-- id: 2naorsny
+newline
+normal|gg0
+
+pause|edit
+
+debug|off
+
+open-popup
+
+write|Now let's add a code section
+newline
+pause|edit
+
+close-popup
+
+pause|edit
+
+normal|4j
+
+
+
+write|-- code
+newline
+write|-- python
+newline
+newline
+write|print("hello, auto")
+newline
+newline
+pause|edit
+
+open-popup
+
+write|Now we can run the code with the hotkey
+newline
+newline
+write|Command + Shift + R
+newline
+newline
+write|and the results will output automatically 
+newline
+write|below the code section
+
+pause|edit
+
+close-popup
+
+pause|edit
+
+combo|<M-S-r>
+
+
