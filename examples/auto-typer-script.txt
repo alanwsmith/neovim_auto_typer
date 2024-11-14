@@ -39,9 +39,15 @@ debug|off
 
 open-popup
 
+write|Now let's add a code section
+newline
+pause|edit
 
+close-popup
 
-stop
+pause|edit
+
+normal|4j
 
 
 
@@ -53,6 +59,23 @@ newline
 write|print("hello, auto")
 newline
 newline
+pause|edit
+
+open-popup
+
+write|Now we can run the code with the hotkey
+newline
+newline
+write|Command + Shift + R
+newline
+newline
+write|and the results will output automatically 
+newline
+write|below the code section
+
+pause|edit
+
+close-popup
 
 pause|edit
 

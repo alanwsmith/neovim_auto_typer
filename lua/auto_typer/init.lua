@@ -99,7 +99,7 @@ end
 function M.output_chars(data)
   for str in string.gmatch(data, "(.)") do
     vim.api.nvim_paste(str, false, -1)
-    M.do_delay(20, 40)
+    M.do_delay(10, 30)
   end
 end
 
@@ -160,6 +160,7 @@ function M.type_the_script()
         vim.cmd("normal " .. val.data)
       elseif val.action == "open-popup" then
         M.open_popup()
+        M.do_delay(350, 350)
       elseif val.action == "open_file" then
         M.open_file(val.path)
       elseif val.action == "pause" then
